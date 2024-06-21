@@ -1,43 +1,77 @@
-// // server.mjs
-// const { createServer }= require('http');
-
-// const server = createServer((req, res) => {
-//   res.writeHead(200, { 'Content-Type': 'text/plain' });
-//   res.end('Hello World!\n');
-// });
-
-// // starts a simple http server locally on port 3000
-// server.listen(3000, '127.0.0.1', () => {
-//   console.log('Listening on 127.0.0.1:3000');
-// });
-
-// import the express module
 const express = require('express');
 const fs = require('fs');
-
 const app = express();
+const path = require('path');
 
-app.use(express.json());
-
-// generate a random filename
-function generateRandomFilename(language) {
-  return `${Math.random().toString(36).substring(7)}.${language}`;
+const folderPath = path.join(__dirname, 'files');
+if (!fs.existsSync(folderPath)) {
+  fs.mkdirSync(folderPath);
 }
 
-app.get('/', (req, res) => {
-  const code = req.body.code;
-  const language = req.body.language;
 
-  fs.writeFile(`./Storage-folder/` + generateRandomFilename(language), code, (err) => {
-    if (!err) {
-      res.send('Success');
-    } else {
-      res.send('Error');
-    }
+
+// Endpoint to create a text file with current timestamp
+app.get('/createFile', (req, res) => {
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const fileName = `${timestamp}.txt`;
+    const filePath = path.join(folderPath, fileName);
+    const fileContent = new Date().toString();
+  
+    fs.writeFile(filePath, fileContent, (err) => {
+      if (err) {
+        console.error('Error creating file:', err);
+        res.status(500).send('Error creating file');
+        return;
+      }
+      console.log('File created successfully:', fileName);
+      res.send('File created successfully');
+    });
   });
-});
 
-// starts a simple http server locally on port 3000
-app.listen(3001, '127.0.0.1', () => {
-  console.log('Listening on 127.0.0.1:3001');
-});
+
+
+
+// Endpoint to retrieve all text files in the folder
+app.get('/getTextFiles', (req, res) => {
+    fs.readdir(folderPath, (err, files) => {
+      if (err) {
+        console.error('Error reading directory:', err);
+        res.status(500).send('Error reading directory');
+        return;
+      }
+  
+      const textFiles = files.filter(file => file.endsWith('.txt'));
+      const fileContents = [];
+  
+      textFiles.forEach((file, index) => {
+        const filePath = path.join(folderPath, file);
+  
+        fs.readFile(filePath, 'utf8', (err, data) => {
+          if (err) {
+            console.error('Error reading file:', err);
+            res.status(500).send('Error reading file');
+            return;
+          }
+  
+          fileContents.push({ fileName: file, content: data });
+  
+          
+          if (fileContents.length === textFiles.length) {
+            res.json(fileContents);
+            console.log('Text files and contents retrieved successfully');
+          }
+        });
+      });
+  
+      // If there are no text files, send an empty array
+      if (textFiles.length === 0) {
+        res.json(fileContents);
+        console.log('No text files found');
+      }
+    });
+  });
+  
+  
+app.listen(3000, '127.0.0.1', () => {
+    console.log('Listening on 127.0.0.1:3000');
+  });
