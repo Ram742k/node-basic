@@ -1,0 +1,34 @@
+[
+    {
+      "_id": ObjectId("60d5ec49e1d3c322f4f38a7a"),
+      "name": "Ram",
+      "mentees": [
+        ObjectId("60d5ec49e1d3c322f4f38a1a"),
+        ObjectId("60d5ec49e1d3c322f4f38a1b")
+      ]
+    },
+    {
+      "_id": ObjectId("60d5ec49e1d3c322f4f38a7b"),
+      "name": "Karthi",
+      "mentees": [
+        ObjectId("60d5ec49e1d3c322f4f38a1a")
+      ]
+    },
+    
+    {
+      "_id": ObjectId("60d5ec49e1d3c322f4f38a7c"),
+      "name": "Suresh",
+      "mentees": [
+        ObjectId("60d5ec49e1d3c322f4f38a1b")
+      ]
+    },
+    {
+        "_id": ObjectId("60d5ec49e1d3c322f4f38a7d"),
+        "name": "Rajesh",
+        "mentees": [
+          ObjectId("60d5ec49e1d3c322f4f38a1a"),
+          ObjectId("60d5ec49e1d3c322f4f38a1b")
+        ]
+    }
+  ]
+  
